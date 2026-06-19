@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+        Quantum Image Steganography
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <h1>
+        NISQ compatible Quantum data hiding in images using blind key-based quantum communication
+    </h1>
+
+    <p class="subtitle">
+        Blind Key-Based Quantum Communication Simulator
+    </p>
+
+    <div class="workflow">
+
+    <strong>Workflow:</strong>
+
+    Sender embeds a secret message into
+    quantum image states using a shared
+    secret key. The encoded quantum states
+    are transmitted to the receiver.
+    The receiver uses the same shared key
+    to recover the hidden message without
+    requiring the original image.
+
+</div>
+
+
+    {% if error_message %}
+
+        <div class="output-box">
+
+            <h3>
+                Error
+            </h3>
+
+            <p>
+                {{ error_message }}
+            </p>
+
+        </div>
+
+    {% endif %}
+
+    <div class="main-container">
+
+        <!-- ====================================== -->
+        <!-- SENDER MODULE -->
+        <!-- ====================================== -->
+
+        <div class="panel">
+
+            <h2>
+                Sender Module
+            </h2>
+
+            <div class="workflow">
+
+                Step 1 → Enter image values,
+                secret message, and secret key.
+                Generate encoded quantum states.
+
+            </div>
+
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="embed"
+                >
+
+                <div class="grid">
+
+                    <input
+                        type="number"
+                        name="p00"
+                        placeholder="Pixel P00"
+                        required
+                    >
+
+                    <input
+                        type="number"
+                        name="p01"
+                        placeholder="Pixel P01"
+                        required
+                    >
+
+                    <input
+                        type="number"
+                        name="p10"
+                        placeholder="Pixel P10"
+                        required
+                    >
+
+                    <input
+                        type="number"
+                        name="p11"
+                        placeholder="Pixel P11"
+                        required
+                    >
+
+                </div>
+
+                <input
+                    type="text"
+                    name="secret"
+                    placeholder="Enter 4-bit secret message"
+                    required
+                >
+
+                <input
+                    type="text"
+                    name="secret_key"
+                    placeholder="Enter 4-bit secret key"
+                    required
+                >
+
+                <button type="submit">
+
+                    Generate Quantum States
+
+                </button>
+
+            </form>
+
+            {% if measurement_text %}
+
+                <div class="output-box">
+
+                    <h3>
+                        Encoded Quantum States
+                    </h3>
+
+                    <textarea
+                        id="encodedStates"
+                        rows="8"
+                        readonly
+                    >{{ measurement_text }}</textarea>
+
+                    <button
+                        type="button"
+                        onclick="copyStates()"
+                    >
+
+                        Copy Encoded States
+
+                    </button>
+
+                </div>
+
+                <div class="output-box">
+
+                    <h3>
+                        Quantum Circuit
+                    </h3>
+
+                    <img
+                        src="{{ url_for('static', filename='output/quantum_circuit.png') }}"
+                    >
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+        <!-- ====================================== -->
+        <!-- RECEIVER MODULE -->
+        <!-- ====================================== -->
+
+        <div class="panel">
+
+            <h2>
+                Receiver Module
+            </h2>
+
+            <div class="workflow">
+
+                Step 2 → Paste encoded quantum
+                states and enter the shared key
+                to recover the hidden message.
+
+            </div>
+
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="extract"
+                >
+
+                <textarea
+                    name="measurement_text"
+                    rows="10"
+                    placeholder="Paste encoded quantum states here..."
+                    required
+                ></textarea>
+
+                <input
+                    type="text"
+                    name="receiver_key"
+                    placeholder="Enter shared secret key"
+                    required
+                >
+
+                <button type="submit">
+
+                    Extract Hidden Message
+
+                </button>
+
+            </form>
+
+            {% if recovered_message %}
+
+```
+<div class="output-box">
+
+    <h3>
+        Recovered Secret Message
+    </h3>
+
+    <h1>
+        {{ recovered_message }}
+    </h1>
+
+    {% if access_status %}
+
+        <hr>
+
+        <h3>
+            Access Status
+        </h3>
+
+        <h2>
+            {{ access_status }}
+        </h2>
+
+    {% endif %}
+
+</div>
+```
+
+{% endif %}
+
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        Developed using Flask, Qiskit,
+        and Quantum Circuit Simulation
+
+    </div>
+
+    <script>
+
+    function copyStates() {
+
+        const textArea = document.getElementById(
+            "encodedStates"
+        );
+
+        textArea.select();
+
+        textArea.setSelectionRange(
+            0,
+            99999
+        );
+
+        navigator.clipboard.writeText(
+            textArea.value
+        );
+
+        alert(
+            "Encoded quantum states copied!"
+        );
+    }
+
+    </script>
+
+</body>
+
+</html>
